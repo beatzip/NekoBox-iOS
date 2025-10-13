@@ -1,21 +1,70 @@
-name: iOS Build Check
+name: iOS CI/CD
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
-  build:
+  build-and-deploy:
+    name: Build, Test & Deploy to TestFlight
     runs-on: macos-latest
+    timeout-minutes: 45
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+    - name: Checkout repository
+      uses: actions/checkout@v3
 
-      - name: Set up Xcode
-        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
+    - name: Set up Ruby for CocoaPods & Fastlane
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: 3.2
 
-      - name: Build (Debug)
-        run: xcodebuild -scheme NekoBox -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 15' build
+    - name: Install dependencies
+      run: |
+        gem install bundler
+        bundle install
+        pod install --repo-update
+
+    - name: Set up Xcode
+      uses: maxim-lobanov/setup-xcode@v3
+      with:
+        xcode-version: '16.3' # укажи версию Xcode
+
+    - name: Run tests
+      run: |
+        xcodebuild test \
+          -project NekoBox.xcodeproj \
+          -scheme NekoBox \
+          -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.0'
+
+    - name: Build and Archive
+      run: |
+        xcodebuild clean archive \
+          -project NekoBox.xcodeproj \
+          -scheme NekoBox \
+          -configuration Release \
+          -archivePath ${{ github.workspace }}/build/NekoBox.xcarchive \
+          SKIP_INSTALL=NO \
+          BUILD_LIBRARIES_FOR_DISTRIBUTION=YES
+
+    - name: Export .ipa
+      run: |
+        xcodebuild -exportArchive \
+          -archivePath ${{ github.workspace }}/build/NekoBox.xcarchive \
+          -exportPath ${{ github.workspace }}/build/ipa \
+          -exportOptionsPlist exportOptions.plist
+
+    - name: Upload .ipa to TestFlight
+      env:
+        APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+        APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}
+        APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }} # JSON content
+      run: |
+        gem install fastlane
+        fastlane pilot upload \
+          --ipa ${{ github.workspace }}/build/ipa/NekoBox.ipa \
+          --api_key_path ./fastlane/AppStoreConnectAPIKey.json
