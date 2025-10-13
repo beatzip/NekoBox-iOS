@@ -30,9 +30,9 @@ jobs:
         pod install --repo-update
 
     - name: Set up Xcode
-      uses: maxim-lobanov/setup-xcode@v3
+      uses: maxim-lobanov/setup-xcode@v1
       with:
-        xcode-version: '16.3' # укажи версию Xcode
+        xcode-version: '16.3' # Укажите нужную версию Xcode
 
     - name: Run tests
       run: |
