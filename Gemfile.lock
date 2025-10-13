@@ -1,14 +1,24 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    # ... зависимости
+    CFPropertyList (3.0.7)
+      base64
+      nkf
+      rexml
+    addressable (2.8.7)
+      public_suffix (>= 2.0.2, < 7.0)
+    # ... остальные зависимости cocoapods и fastlane ...
+    cocoapods (1.15.2)
+      # ... зависимости cocoapods
+    fastlane (2.222.0)
+      # ... зависимости fastlane
 
 PLATFORMS
   arm64-darwin-23
 
 DEPENDENCIES
-  fastlane
   cocoapods
+  fastlane
 
 BUNDLED WITH
    2.7.2
