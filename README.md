@@ -1,2 +1,2 @@
-# NB4A-SingBox-Config
+# NekoBox-iOS
 Полная модель sing-box конфигурации + demo SwiftUI
