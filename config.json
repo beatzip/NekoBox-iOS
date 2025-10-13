@@ -1,0 +1,12 @@
+{
+  "rules": [
+    {
+      "inbound": ["mixed-in"],
+      "outbound": "direct",
+      "domain": ["geosite:cn"]
+    }
+  ],
+  "dnsRoutingEnabled": true,
+  "localDNS": "223.5.5.5",
+  "remoteDNS": "8.8.8.8"
+}
