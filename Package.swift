@@ -23,12 +23,13 @@ let package = Package(
         .target(
             name: "NekoBox",
             dependencies: [],
-            path: "Sources/NekoBox"
+            path: "NekoBox-iOS"
         ),
         .testTarget(
             name: "NekoBoxTests",
             dependencies: ["NekoBox"],
-            path: "Tests/NekoBoxTests"
+            path: "NekoBox-iOS"
         )
     ]
+
 )
