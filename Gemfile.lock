@@ -1,2 +1,4 @@
 bundle install
 bundle lock --add-platform arm64-darwin-23
+PLATFORMS
+  arm64-darwin-23
