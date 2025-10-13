@@ -1,6 +1,6 @@
 # 🧾 NekoBox iOS — Changelog
 
-## [0.1.0] — 2025-10-13
+## [1.0.0] — 2025-10-13
 
 ### 🇷🇺 Русский
 - Первая версия NekoBox iOS (MVP)  
@@ -19,4 +19,5 @@
 - Dynamic config.json generation with full type safety  
 - Shared App Group storage for tunnel config  
 - Project licensed under MIT  
+
 - Added multilingual README and release notes
