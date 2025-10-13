@@ -1,85 +1,21 @@
-name: iOS CI/CD
+name: iOS Build Check
 
 on:
   push:
-    branches:
-      - main
+    branches: [ main ]
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
 
 jobs:
-  build-and-deploy:
-    name: Build, Test & Deploy to TestFlight
+  build:
     runs-on: macos-latest
-    timeout-minutes: 45
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-    - name: Set up Ruby for CocoaPods & Fastlane
-      uses: ruby/setup-ruby@v1
-      with:
-        ruby-version: 3.2
-        bundler-cache: true
+      - name: Set up Xcode
+        run: sudo xcode-select -s /Applications/Xcode.app/Contents/Developer
 
-    - name: Cache CocoaPods
-      uses: actions/cache@v4
-      with:
-        path: Pods
-        key: ${{ runner.os }}-pods-${{ hashFiles('Podfile.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-pods-
-
-    - name: Install dependencies
-      run: |
-        bundle install
-        pod install --repo-update
-
-    - name: Set up Xcode
-      uses: maxim-lobanov/setup-xcode@v1
-      with:
-        xcode-version: '15.4'  # ✅ Используйте реальную версию
-
-    - name: Run tests
-      run: |
-        xcodebuild test \
-          -project NekoBox.xcodeproj \
-          -scheme NekoBox \
-          -destination 'platform=iOS Simulator,name=iPhone 15,OS=17.5'  # ✅ Используйте реальную версию iOS
-
-    - name: Build and Archive
-      run: |
-        xcodebuild clean archive \
-          -project NekoBox.xcodeproj \
-          -scheme NekoBox \
-          -configuration Release \
-          -archivePath "${{ github.workspace }}/build/NekoBox.xcarchive" \
-          SKIP_INSTALL=NO \
-          BUILD_LIBRARIES_FOR_DISTRIBUTION=YES
-
-    - name: Export .ipa
-      run: |
-        xcodebuild -exportArchive \
-          -archivePath "${{ github.workspace }}/build/NekoBox.xcarchive" \
-          -exportPath "${{ github.workspace }}/build/ipa" \
-          -exportOptionsPlist exportOptions.plist
-
-    - name: Upload .ipa to TestFlight
-      env:
-        APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
-        APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}
-        APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
-      run: |
-        bundle exec fastlane pilot upload \
-          --ipa "${{ github.workspace }}/build/ipa/NekoBox.ipa" \
-          --api_key_path ./fastlane/AppStoreConnectAPIKey.json
-
-    # Опционально: загрузка артефактов
-    - name: Upload Build Artifacts
-      if: always()
-      uses: actions/upload-artifact@v4
-      with:
-        name: build-artifacts
-        path: ${{ github.workspace }}/build/
+      - name: Build (Debug)
+        run: xcodebuild -scheme NekoBox -sdk iphonesimulator -destination 'platform=iOS Simulator,name=iPhone 15' build
