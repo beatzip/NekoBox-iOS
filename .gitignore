@@ -1,0 +1,83 @@
+# ======================
+# Xcode / Swift / iOS
+# ======================
+
+# User-specific files
+*.xcuserstate
+*.xcscmblueprint
+*.xcuserdatad
+*.xccheckout
+
+# Build products
+build/
+DerivedData/
+*.o
+*.LinkFileList
+*.hmap
+
+# App packages
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+# Xcode project workspace
+*.xcworkspace/
+!default.xcworkspace/contents.xcworkspacedata
+
+# Swift Package Manager
+Packages/
+Package.pins
+Package.resolved
+.swiftpm/xcode/package.xcworkspace/
+
+# CocoaPods
+Pods/
+Podfile.lock
+
+# Carthage
+Carthage/Build/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+fastlane/test_output
+
+# Archives and profiles
+*.xcarchive
+*.mobileprovision
+*.certSigningRequest
+*.provisionprofile
+
+# Symbolicated crash logs
+*.crash
+*.log
+*.trace
+
+# Temporary files
+*.tmp
+*.swp
+*.DS_Store
+*.orig
+
+# Shared configs (App Group cache or runtime generated)
+cache.db
+*.json
+!config.json   # keep your base config.json under version control
+
+# Editor junk
+.idea/
+.vscode/
+*.bak
+
+# ======================
+# NekoBox specific
+# ======================
+# Ignore runtime sing-box configs and logs
+*.db
+*.sqlite
+*.log
+*.plist
+sing-box/
+logs/
+output/
